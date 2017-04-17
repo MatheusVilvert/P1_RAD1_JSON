@@ -1,0 +1,136 @@
+<html>
+    <head>
+            <meta charset="UTF-8">
+            <title>PROVA</title>
+    </head>
+
+    <body>        
+            <input type="text" id="buscaplaca" placeholder="Placa para busca">
+            <input type="button" value="Buscar" onclick="gerenciador.buscar()">
+        
+
+        <input type="button" value="Listar Todos" onclick="gerenciador.listarTodos()">
+
+    <form action="javascript:void(0);" method="POST" onsubmit="gerenciador.add()">
+        <input type="text" id="add-placa" placeholder="Insira a placa do veiculo">
+        <input type="text" id="add-marca" placeholder="Insira a marca do veiculo">
+        <input type="text" id="add-modelo" placeholder="Insira o modelo do veiculo">
+        <input type="submit" value="+">
+    </form>
+
+    
+<table>
+    <tr>
+    <th>ID , PLACA , MARCA , MODELO</th>
+    </tr>
+    <tbody id="veiculos">
+    </tbody>
+</table>
+
+    </body>
+    <script>
+        var gerenciador = new function(){
+            this.id = 0;
+            this.placas;
+            this.marcas;
+            this.modelos;
+            this.veiculos = [];
+            this.itemEditar = -1;
+            this.el = document.getElementById("veiculos");
+
+            this.listarTodos = function(){
+                var dados = ' ';
+            if (this.veiculos.length > 0) {
+                for (i = 0; i < this.veiculos.length; i++) {
+                    dados += '<tr>';
+                    dados += '<td>' + this.veiculos[i].id + '</td>';
+                    dados += '<td>' + this.veiculos[i].placa + '</td>';
+                    dados += '<td>' + this.veiculos[i].marca + '</td>';
+                    dados += '<td>' + this.veiculos[i].modelo + '</td>';
+                    dados += '<td><button onclick="gerenciador.editar(' + i + ')">Editar</button></td>';
+                    dados += '<td><button onclick="gerenciador.excluir(' + i + ')">Excluir</button></td>';
+                    dados += '</tr>';
+                }
+            }
+            this.el.innerHTML = dados;
+            };
+           
+
+            this.add = function () {
+                var placa = document.getElementById("add-placa").value;
+                var marca = document.getElementById("add-marca").value;
+                var modelo = document.getElementById("add-modelo").value;
+                var veiculo = {id:(this.id+1),placa: placa,marca: marca,modelo: modelo};                        
+
+                if (placa && marca && modelo) {
+                    if (this.itemEditar == -1) {
+                        this.veiculos.push(veiculo);
+                        this.id = this.id+1;                        
+                                            
+                    }else {
+                        veiculo.id = (this.veiculos[this.itemEditar].id);
+                        this.veiculos.splice(this.itemEditar, 1, veiculo);                                          
+                    }
+                        this.listarTodos();
+                }                
+                this.novo();
+            };
+
+            this.editar = function (item) {
+            this.itemEditar = item;           
+            var veiculo = this.veiculos[item];
+            
+            if (veiculo) {
+               
+                var elplaca = document.getElementById("add-placa");
+                var elmarca = document.getElementById("add-marca");
+                var elmodelo = document.getElementById("add-modelo");
+                
+                elplaca.value = veiculo.placa;
+                elmarca.value = veiculo.marca;
+                elmodelo.value = veiculo.modelo; 
+            }           
+        };
+        this.novo = function () {
+            this.itemEditar = -1;
+
+            var elplaca = document.getElementById("add-placa");
+            var elmarca = document.getElementById("add-marca");
+            var modelo = document.getElementById("add-modelo");
+            var editar = document.getElementById("buscaplaca");
+            
+            elplaca.value = '';
+            elmarca.value = '';
+            modelo.value = ''; 
+            editar.value = ''; 
+            
+        };
+        this.excluir = function (item) {
+            this.veiculos.splice(item, 1);  
+            this.listarTodos();
+            
+        };
+
+        this.buscar = function(){
+            var dados = '';
+            var elplaca = document.getElementById("buscaplaca").value;
+            if (this.veiculos.length > 0) {
+                for (i = 0; i < this.veiculos.length; i++) {
+                    if(this.veiculos[i].placa == elplaca){
+                        dados += '<tr>';
+                        dados += '<td>' + this.veiculos[i].id + '</td>';
+                        dados += '<td>' + this.veiculos[i].placa + '</td>';
+                        dados += '<td>' + this.veiculos[i].marca + '</td>';
+                        dados += '<td>' + this.veiculos[i].modelo + '</td>';                       
+                        dados += '</tr>';
+                    }
+                }
+            }
+            this.el.innerHTML = dados;
+            this.novo();
+        }
+
+        };
+        gerenciador.listarTodos();
+    </script
+</html>
